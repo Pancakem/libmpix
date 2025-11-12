@@ -380,3 +380,36 @@ void mpix_print_ctrls(int32_t *ctrls[])
 		}
 	}
 }
+
+#if CONFIG_MPIX_BENCHMARK
+void mpix_print_benchmark(struct mpix_benchmark_entry *entries, size_t count) {
+#if CONFIG_MPIX_BENCHMARK_CPU
+	printf("| %-25s | %-8s | %-10s | %-10s |\n", "Operation", "Format", "Resolution",
+	       "CPU Cycles");
+	printf("------------------------------------------------------------------"
+	       "\n");
+
+	for (int i = 0; i < count; i++) {
+		printf("| %-25s | %-8s | %-10s | %-10u |\n", 
+				entries[i].operation, entries[i].format,
+		       entries[i].resolution, entries[i].cpu_cycles);
+	}
+
+	printf("\n\n");
+#elif CONFIG_MPIX_BENCHMARK_MEMORY
+	printf("| %-25s | %-8s | %-10s | %-10s | %-10s |\n", "Operation", "Format", "Resolution", "Stack (B)",
+	       "Heap (B)");
+	printf("-------------------------------------------------------------------------------"
+	       "\n");
+
+	for (int i = 0; i < count; i++) {
+		printf("| %-25s | %-8s | %-10s | %-10u | %-10u |\n", 
+				entries[i].operation, entries[i].format, 
+				entries[i].resolution, entries[i].stack_bytes, 
+				entries[i].heap_bytes);
+	}
+
+	printf("\n\n");
+#endif
+}
+#endif

@@ -53,4 +53,19 @@ void mpix_port_free(void *mem, enum mpix_mem_source mem_source);
  */
 void mpix_port_printf(const char *fmt, ...);
 
+#if CONFIG_MPIX_BENCHMARK_MEMORY
+
+/** 
+ * @brief Register a heap memory alloc/free listener
+ * 
+ * @param entry A pointer to benchmark stats storage
+ */
+void mpix_start_heap_track(struct mpix_benchmark_entry *entry);
+
+/** 
+ * @brief Unregister a heap memory alloc/free listener
+ * 
+ */
+void mpix_end_heap_track(void);
+#endif
 #endif /** @} */

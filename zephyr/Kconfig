@@ -14,6 +14,24 @@ config MPIX_HEAP_SIZE
 	  line width are allocated. This configures how much memory to use for it.
 	  The default is enough for a few conversion for small frames.
 
+config MPIX_BENCHMARK
+	bool "Enable MPIX benchmarking support"
+	default n
+	help
+	  Enable this option to include benchmarking support for the MPIX module.
+
+config MPIX_BENCHMARK_CPU
+	bool "Enable MPIX benchmarking for CPU"
+	default n
+	help
+	  Enable this option to benchmark CPU for MPIX operations.
+
+config MPIX_BENCHMARK_MEMORY
+	bool "Enable MPIX benchmarking for memory"
+	default n
+	help
+	  Enable this option to benchmark memory usage of MPIX operations.
+	
 module = MPIX
 module-str = pixel
 source "subsys/logging/Kconfig.template.log_config"

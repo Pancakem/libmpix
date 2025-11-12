@@ -6,6 +6,10 @@
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/video.h>
 #include <zephyr/drivers/video-controls.h>
+#if CONFIG_MPIX_BENCHMARK_MEMORY
+#include <zephyr/sys/sys_heap.h>
+#include <zephyr/sys/heap_listener.h>
+#endif
 
 #include <mpix/port.h>
 #include <mpix/config.h>
@@ -37,3 +41,54 @@ void mpix_port_printf(const char *fmt, ...)
 	vprintf(fmt, ap);
 	va_end(ap);
 }
+
+#if CONFIG_MPIX_BENCHMARK_MEMORY
+struct mpix_benchmark_entry *benchmark_entry = NULL;
+
+uint32_t mpix_get_free_stack(void)
+{
+	int ret;
+	struct k_thread *current_thread = k_current_get();
+	size_t free_stack;
+
+	ret = k_thread_stack_space_get(current_thread, &free_stack);
+	if (ret < 0) {
+		mpix_port_printf("failed to get free stack\r\n");
+	} else {
+		mpix_port_printf("stack | free: %u bytes\r\n", free_stack);
+	}
+
+	return free_stack;
+}
+
+static void mpix_on_heap_alloc(uintptr_t heap_id, void *mem, size_t bytes)
+{
+	(void)mem;
+	(void)heap_id;
+	benchmark_entry->heap_bytes += bytes;
+}
+
+HEAP_LISTENER_ALLOC_DEFINE(mpix_heap_alloc_listener, HEAP_ID_FROM_POINTER(&mpix_heap),
+			   mpix_on_heap_alloc);
+
+static void mpix_on_heap_free(uintptr_t heap_id, void *mem, size_t bytes)
+{
+	(void)mem;
+	(void)heap_id;
+}
+
+HEAP_LISTENER_FREE_DEFINE(mpix_heap_free_listener, HEAP_ID_FROM_POINTER(&mpix_heap),
+			  mpix_on_heap_free);
+
+void mpix_start_heap_track(struct mpix_benchmark_entry *entry)
+{
+	heap_listener_register(&mpix_heap_alloc_listener);
+	benchmark_entry = entry;
+}
+
+void mpix_end_heap_track(void)
+{
+	heap_listener_unregister(&mpix_heap_alloc_listener);
+	benchmark_entry = NULL;
+}
+#endif

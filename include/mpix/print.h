@@ -93,4 +93,13 @@ void mpix_print_stats(struct mpix_stats *stats);
  */
 void mpix_print_ctrls(int32_t *ctrls[]);
 
+#if CONFIG_MPIX_BENCHMARK
+/** 
+ * @brief Print benchmark statistics
+ * 
+ * @param bench The benchmark stats to print out
+ */
+void mpix_print_benchmark(struct mpix_benchmark_entry *bench, size_t count);
+#endif
+
 #endif /** @} */

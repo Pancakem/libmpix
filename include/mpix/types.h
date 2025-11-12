@@ -228,4 +228,22 @@ struct mpix_auto_ctrls {
 	int32_t blue_balance_q10;
 };
 
+#if CONFIG_MPIX_BENCHMARK
+struct mpix_benchmark_entry {
+	/** Name of operation (algorithm) under test */
+	const char *operation;
+	/** Image format */
+	const char *format;
+	/** Image resolution */
+	const char *resolution;
+	/** CPU cycle of operation */
+	uint32_t cpu_cycles;
+	/** Used stack bytes */
+	uint32_t stack_bytes;
+	/** Used heap bytes */
+	uint32_t heap_bytes;
+};
+
+#endif
+
 #endif /** @} */
