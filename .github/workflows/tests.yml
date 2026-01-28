@@ -11,10 +11,15 @@ jobs:
 
       - name: Install packages to build it
         run: |
-          sudo apt install cmake build-essential binutils-arm-none-eabi
+          sudo apt update
+          sudo apt install cmake build-essential binutils-arm-none-eabi qemu-system-arm gcc-arm-none-eabi
 
       - name: Clone the repository
         uses: actions/checkout@v5
+
+      - name: Add CMSIS_6
+        run: |
+          git clone https://github.com/ARM-software/CMSIS_6.git
 
       - name: Build and run each test
         run: |
